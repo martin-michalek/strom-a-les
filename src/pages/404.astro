@@ -1,0 +1,14 @@
+---
+import { u } from '../config';
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+<Layout title="Stránka sa nenašla" description="Požadovaná stránka neexistuje." noindex>
+  <section class="container-page flex flex-col items-center py-28 text-center">
+    <span class="icon-tile !h-16 !w-16"><Icon name="trees" class="h-8 w-8" /></span>
+    <p class="mt-6 text-sm font-semibold uppercase tracking-wider text-forest">Chyba 404</p>
+    <h1 class="mt-2 text-4xl ">Zablúdili ste v lese</h1>
+    <p class="mt-4 max-w-md text-lg text-body">Stránka, ktorú hľadáte, neexistuje alebo bola presunutá.</p>
+    <a href={u('/')} class="btn-primary mt-8">Späť na úvod</a>
+  </section>
+</Layout>

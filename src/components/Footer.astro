@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import etw from '../assets/brand/etw.png';
+import { CERTIFICATES, SITE, phoneHref, u } from '../config';
+import { CATEGORIES, SERVICES, serviceHref } from '../data/services';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+const year = new Date().getFullYear();
+const etwCert = CERTIFICATES.find((c) => c.id === 'etw');
+const socials = [
+  { href: SITE.facebook, icon: 'facebook', label: 'Facebook' },
+  { href: SITE.instagram, icon: 'instagram', label: 'Instagram' },
+  { href: SITE.youtube, icon: 'youtube', label: 'YouTube' },
+].filter((s) => s.href);
+---
+<footer class="relative mt-28 overflow-hidden bg-deep text-on-deep">
+  <div class="rings pointer-events-none absolute inset-0 opacity-60"></div>
+  <div class="container-page relative grid gap-12 py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+    <div>
+      <a href={u('/')} class="inline-block" aria-label="Stromales – úvodná stránka">
+        <img src={u('/brand/logo-full-dark.svg')} alt="Stromales – arboristika a lesné hospodárstvo" width="260" height="47" class="h-auto w-60" loading="lazy" />
+      </a>
+      <p class="mt-6 max-w-sm text-sm leading-relaxed text-on-deep/75">
+        Odborná starostlivosť o stromy a les. Pôsobíme na celom Slovensku a v Českej republike.
+      </p>
+      <div class="mt-6 flex items-center gap-4">
+        <span class="grid h-20 w-20 place-items-center rounded-full bg-white p-1">
+          <Image quality={72} src={etw} alt="Logo European Tree Worker – certifikát European Arboricultural Council" width={160} class="h-full w-full" />
+        </span>
+        <p class="text-sm leading-snug text-on-deep/80">
+          Certifikovaný arborista<br /><strong class="text-on-deep">European Tree Worker</strong>
+          {etwCert?.number && <><br /><span class="text-on-deep/60">č. {etwCert.number}</span></>}
+        </p>
+      </div>
+    </div>
+
+    {(Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[]).map((cat) => (
+      <div>
+        <h2 class="mb-4 font-sans text-xs font-bold uppercase tracking-[0.16em] !text-on-deep/60">{CATEGORIES[cat].title}</h2>
+        <ul class="space-y-2.5 text-sm">
+          {SERVICES.filter((s) => s.category === cat).map((s) => (
+            <li><a href={u(serviceHref(s))} class="text-on-deep/85 transition hover:text-leaf">{s.title}</a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+
+    <div>
+      <h2 class="mb-4 font-sans text-xs font-bold uppercase tracking-[0.16em] !text-on-deep/60">Kontakt</h2>
+      <ul class="space-y-3 text-sm">
+        <li class="font-semibold">{SITE.owner}</li>
+        <li class="flex gap-2.5"><Icon name="phone" class="h-5 w-5 shrink-0 text-leaf" /><a href={phoneHref(SITE.phone)} class="hover:text-leaf">{SITE.phone}</a></li>
+        <li class="flex gap-2.5"><Icon name="mail" class="h-5 w-5 shrink-0 text-leaf" /><a href={`mailto:${SITE.email}`} class="break-all hover:text-leaf">{SITE.email}</a></li>
+        <li class="flex gap-2.5"><Icon name="pin" class="h-5 w-5 shrink-0 text-leaf" /><span>{SITE.street}<br />{SITE.postalCode} {SITE.city}</span></li>
+        <li class="flex gap-2.5"><Icon name="clock" class="h-5 w-5 shrink-0 text-leaf" />{SITE.openingHours}</li>
+      </ul>
+      {socials.length > 0 && (
+        <div class="mt-5 flex gap-2">
+          {socials.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener" aria-label={s.label} class="grid h-10 w-10 place-items-center rounded-full border border-on-deep/20 transition hover:border-leaf hover:text-leaf">
+              <Icon name={s.icon} class="h-5 w-5" />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div class="relative border-t border-on-deep/10">
+    <div class="container-page flex flex-col gap-3 py-6 text-xs text-on-deep/60 md:flex-row md:items-center md:justify-between">
+      <p>© {year} {SITE.legalName} · IČO: {SITE.ico}{SITE.dic && ` · DIČ: ${SITE.dic}`}{SITE.icdph && ` · IČ DPH: ${SITE.icdph}`}</p>
+      <ul class="flex flex-wrap gap-x-5 gap-y-1">
+        <li><a href={u('/galeria/')} class="hover:text-leaf">Galéria</a></li>
+        <li><a href={u('/cennik/')} class="hover:text-leaf">Cenník</a></li>
+        <li><a href={u('/o-nas/')} class="hover:text-leaf">O nás</a></li>
+        <li><a href={u('/kontakt/')} class="hover:text-leaf">Kontakt</a></li>
+        <li><a href={u('/ochrana-osobnych-udajov/')} class="hover:text-leaf">Ochrana osobných údajov</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

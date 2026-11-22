@@ -1,0 +1,185 @@
+---
+import { SITE, u } from '../config';
+import { CATEGORIES, SERVICES } from '../data/services';
+const inputCls =
+  'mt-2 block w-full rounded-2xl border border-line bg-paper px-4 py-3.5 text-base text-ink placeholder:text-muted/70 transition focus:border-forest focus:outline-none focus:ring-4 focus:ring-forest/15';
+const labelCls = 'block text-sm font-semibold text-ink';
+const cats = Object.keys(CATEGORIES) as (keyof typeof CATEGORIES)[];
+---
+<form
+  id="contact-form"
+  class="card space-y-5 !p-6 sm:!p-9"
+  data-key={SITE.web3formsKey}
+  data-email={SITE.email}
+  novalidate
+>
+  <input type="hidden" name="subject" value="Nový dopyt z webu Stromales" />
+  <input type="hidden" name="from_name" value="Web Stromales" />
+  <!-- ochrana proti spamu -->
+  <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class={labelCls}>
+      Meno a priezvisko *
+      <input name="name" required autocomplete="name" data-msg="Zadajte prosím vaše meno." class={inputCls} placeholder="Ján Novák" />
+    </label>
+    <label class={labelCls}>
+      Telefón *
+      <input name="phone" type="tel" required autocomplete="tel" data-msg="Zadajte telefónne číslo, aby sme sa vám mohli ozvať." class={inputCls} placeholder="+421 9xx xxx xxx" />
+    </label>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <label class={labelCls}>
+      E-mail
+      <input name="email" type="email" autocomplete="email" data-msg="Skontrolujte prosím formát e-mailu, napríklad jan@email.sk." class={inputCls} placeholder="vas@email.sk" />
+    </label>
+    <label class={labelCls}>
+      Obec / lokalita
+      <input name="location" autocomplete="address-level2" class={inputCls} placeholder="Napr. Považská Bystrica" />
+    </label>
+  </div>
+
+  <label class={labelCls}>
+    O akú službu máte záujem?
+    <select name="service" class={inputCls}>
+      {cats.map((c) => (
+        <optgroup label={CATEGORIES[c].title}>
+          {SERVICES.filter((s) => s.category === c).map((s) => <option>{s.title}</option>)}
+        </optgroup>
+      ))}
+      <option>Iné / neviem presne</option>
+    </select>
+  </label>
+
+  <label class={labelCls}>
+    Správa *
+    <textarea name="message" rows="5" required data-msg="Napíšte nám prosím, s čím potrebujete pomôcť." class={inputCls} placeholder="Napr. vysoký smrek pri dome, nakláňa sa nad strechu. Treba ho odstrániť…"></textarea>
+  </label>
+
+  <label class="flex items-start gap-3 text-sm">
+    <input type="checkbox" name="consent" required data-msg="Bez súhlasu so spracovaním údajov vám nemôžeme odpovedať." class="mt-0.5 h-5 w-5 shrink-0 rounded accent-[var(--forest)]" />
+    <span>Súhlasím so spracovaním osobných údajov za účelom vybavenia dopytu. <a href={u('/ochrana-osobnych-udajov/')} class="font-semibold text-forest underline underline-offset-2">Viac informácií</a></span>
+  </label>
+
+  {SITE.web3formsKey && <div class="h-captcha" data-captcha="true" data-lang="sk"></div>}
+
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <button type="submit" class="btn-primary w-full sm:w-auto">Odoslať dopyt</button>
+    <p class="text-sm text-muted">Ozveme sa vám {SITE.responseTime}.</p>
+  </div>
+  <p id="form-status" class="hidden rounded-2xl px-4 py-3 text-sm font-medium" role="status" aria-live="polite"></p>
+</form>
+
+{SITE.web3formsKey && <script src="https://web3forms.com/client/script.js" async defer is:inline></script>}
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('form-status');
+
+  const show = (msg: string, ok: boolean) => {
+    if (!status) return;
+    status.textContent = msg;
+    status.className = `rounded-xl px-4 py-3 text-sm font-medium ${ok ? 'bg-moss text-forest' : 'bg-red-50 text-red-800 dark:bg-red-950/60 dark:text-red-200'}`;
+  };
+
+  // Vlastné chybové hlásenia v slovenčine – prehliadač zobrazuje svoje vlastné
+  // v jazyku prehliadača ("Please fill out this field"), preto ich nepoužívame.
+  const errCls = 'field-error mt-1.5 block text-sm font-medium text-red-600 dark:text-red-400';
+
+  const clearError = (field: Element) => {
+    const label = field.closest('label');
+    label?.parentElement?.querySelectorAll(':scope > .field-error').forEach((n) => n.remove());
+    label?.querySelectorAll('.field-error').forEach((n) => n.remove());
+    field.classList.remove('!border-red-400');
+  };
+
+  const showError = (field: HTMLInputElement | HTMLTextAreaElement, msg: string) => {
+    clearError(field);
+    const span = document.createElement('span');
+    span.className = errCls;
+    span.textContent = msg;
+    const label = field.closest('label');
+    if (!label) return;
+    if (field.type === 'checkbox') label.parentElement?.insertBefore(span, label.nextSibling);
+    else label.appendChild(span);
+    field.classList.add('!border-red-400');
+  };
+
+  const messageFor = (field: HTMLInputElement | HTMLTextAreaElement) => {
+    const custom = field.dataset.msg;
+    if (field.validity.valueMissing) return custom ?? 'Toto pole je povinné.';
+    if (field.validity.typeMismatch) return custom ?? 'Skontrolujte prosím zadanú hodnotu.';
+    return custom ?? 'Skontrolujte prosím zadanú hodnotu.';
+  };
+
+  const fields = Array.from(
+    form?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[name]:not([type=hidden]), textarea[name]') ?? [],
+  ).filter((f) => f.name !== 'botcheck');
+
+  fields.forEach((f) => {
+    f.addEventListener('input', () => f.checkValidity() && clearError(f));
+    f.addEventListener('change', () => f.checkValidity() && clearError(f));
+  });
+
+  const validate = () => {
+    let first: HTMLInputElement | HTMLTextAreaElement | null = null;
+    fields.forEach((f) => {
+      if (f.checkValidity()) {
+        clearError(f);
+      } else {
+        showError(f, messageFor(f));
+        if (!first) first = f;
+      }
+    });
+    first?.focus();
+    return !first;
+  };
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validate()) {
+      show('Skontrolujte prosím vyznačené polia.', false);
+      return;
+    }
+    const key = form.dataset.key;
+    // hCaptcha – bez potvrdenia Web3Forms správu odmietne, tak to povieme skôr
+    const captcha = form.querySelector('textarea[name="h-captcha-response"]') as HTMLTextAreaElement | null;
+    if (key && captcha && !captcha.value) {
+      show('Potvrďte prosím, že nie ste robot.', false);
+      return;
+    }
+
+    const data = new FormData(form);
+
+    // Bez nastaveného kľúča otvoríme emailového klienta
+    if (!key) {
+      const body = [...data.entries()]
+        .filter(([k]) => ['name', 'phone', 'email', 'location', 'service', 'message'].includes(k))
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n');
+      window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent('Dopyt z webu Stromales')}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Odosielam…';
+    data.append('access_key', key);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        form.reset();
+        show('Ďakujeme, správa bola odoslaná. Ozveme sa vám do 24 hodín.', true);
+      } else {
+        throw new Error(json.message);
+      }
+    } catch {
+      show(`Správu sa nepodarilo odoslať. Skúste to znova alebo napíšte na ${form.dataset.email}.`, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Odoslať dopyt';
+    }
+  });
+</script>

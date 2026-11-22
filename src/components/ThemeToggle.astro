@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+<button
+  type="button"
+  data-theme-toggle
+  class:list={[
+    'grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-surface text-ink transition hover:border-bark',
+    cls,
+  ]}
+  aria-label="Prepnúť svetlý / tmavý režim"
+  title="Prepnúť svetlý / tmavý režim"
+>
+  <span class="dark:hidden"><Icon name="moon" class="h-5 w-5" /></span>
+  <span class="hidden dark:block"><Icon name="sun" class="h-5 w-5" /></span>
+</button>

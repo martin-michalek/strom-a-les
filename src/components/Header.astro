@@ -1,0 +1,140 @@
+---
+import { BASE, NAV, SITE, phoneHref, u } from '../config';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const base = BASE.replace(/\/$/, '');
+const path = (Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length) || '/' : Astro.url.pathname).replace(/\/?$/, '/');
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+// "Domov" netreba v hornom menu (logo vedie na úvod)
+const desktopNav = NAV.filter((n) => n.href !== '/');
+---
+<header id="site-header" class="sticky top-0 z-40 border-b border-transparent bg-paper/85 backdrop-blur-md transition-[border-color,box-shadow] duration-300">
+  <div class="container-page flex h-[4.5rem] items-center justify-between gap-4">
+    <a href={u('/')} class="flex shrink-0 items-center" aria-label={`${SITE.name} – úvodná stránka`}>
+      <Logo class="h-7 w-auto sm:h-8" alt="" />
+    </a>
+
+    <nav class="hidden items-center gap-0.5 xl:flex" aria-label="Hlavná navigácia">
+      {desktopNav.map((item) =>
+        item.children ? (
+          <div class="group relative">
+            <a
+              href={u(item.href)}
+              class:list={[
+                'flex items-center gap-1 rounded-full px-3.5 py-2 text-[15px] font-semibold transition-colors',
+                isActive(item.href) ? 'text-forest' : 'text-ink hover:text-forest',
+              ]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              aria-haspopup="true"
+            >
+              {item.label}
+              <Icon name="chevron" class="h-4 w-4 transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
+            </a>
+            <div class="invisible absolute left-1/2 top-full w-72 -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              <ul class="card !rounded-2xl !p-2">
+                {item.children.map((c) => (
+                  <li>
+                    <a
+                      href={u(c.href)}
+                      class:list={[
+                        'flex items-center justify-between rounded-xl px-4 py-2.5 text-[15px] font-medium transition-colors hover:bg-moss hover:text-forest',
+                        isActive(c.href) ? 'bg-moss text-forest' : 'text-body',
+                      ]}
+                    >
+                      {c.label}
+                      <Icon name="arrow" class="h-4 w-4 opacity-40" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <a
+            href={u(item.href)}
+            class:list={[
+              'rounded-full px-3.5 py-2 text-[15px] font-semibold transition-colors',
+              isActive(item.href) ? 'text-forest' : 'text-ink hover:text-forest',
+            ]}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ),
+      )}
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={phoneHref(SITE.phone)} class="btn-primary hidden !px-5 !py-2.5 text-sm md:inline-flex">
+        <Icon name="phone" class="h-4 w-4" /> {SITE.phone}
+      </a>
+      <ThemeToggle />
+      <button
+        id="menu-toggle"
+        type="button"
+        class="grid h-11 w-11 place-items-center rounded-full border border-line bg-surface text-ink xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Otvoriť menu"
+      >
+        <span class="icon-open"><Icon name="menu" /></span>
+        <span class="icon-close hidden"><Icon name="close" /></span>
+      </button>
+    </div>
+  </div>
+
+  <nav
+    id="mobile-menu"
+    class="hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-line bg-paper xl:hidden"
+    aria-label="Mobilná navigácia"
+  >
+    <div class="container-page flex flex-col py-4">
+      {NAV.map((item) => (
+        <div class="border-b border-line/70 last:border-0">
+          <a
+            href={u(item.href)}
+            class:list={['block py-3.5 font-serif text-xl', isActive(item.href) ? 'text-forest' : 'text-ink']}
+          >
+            {item.label}
+          </a>
+          {item.children && (
+            <ul class="-mt-1 grid grid-cols-1 gap-x-4 pb-3 sm:grid-cols-2">
+              {item.children.map((c) => (
+                <li>
+                  <a href={u(c.href)} class="flex items-center gap-2 py-1.5 text-[15px] text-muted hover:text-forest">
+                    <span class="h-1.5 w-1.5 rounded-full bg-leaf"></span>
+                    {c.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+      <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <a href={phoneHref(SITE.phone)} class="btn-primary"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+        <a href={`mailto:${SITE.email}`} class="btn-secondary"><Icon name="mail" class="h-5 w-5" /> {SITE.email}</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const btn = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Zavrieť menu' : 'Otvoriť menu');
+    btn.querySelector('.icon-open')?.classList.toggle('hidden', open);
+    btn.querySelector('.icon-close')?.classList.toggle('hidden', !open);
+    document.body.classList.toggle('overflow-hidden', open);
+  });
+  // po odscrollovaní sa pod hlavičkou objaví jemná linka
+  const onScroll = () => header?.classList.toggle('!border-line', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

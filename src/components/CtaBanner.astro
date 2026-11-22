@@ -1,0 +1,30 @@
+---
+import { SITE, phoneHref, u } from '../config';
+import Icon from './Icon.astro';
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = 'Potrebujete ošetriť strom alebo sa postarať o les?',
+  text = 'Zavolajte alebo napíšte – prídeme na obhliadku, posúdime situáciu a pripravíme cenovú ponuku. Obhliadka je zdarma.',
+} = Astro.props;
+---
+<section class="container-page mt-28" data-reveal>
+  <div class="relative overflow-hidden rounded-[2rem] bg-[#1f3a28] px-6 py-14 text-white sm:px-14 sm:py-16 dark:bg-[#183022]">
+    <svg class="pointer-events-none absolute -right-16 -top-20 h-80 w-80 text-white/[0.06]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z" />
+    </svg>
+    <div class="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-[#35b065]/20 blur-3xl"></div>
+    <div class="relative flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl leading-tight !text-white sm:text-4xl">{title}</h2>
+        <p class="mt-4 text-lg leading-relaxed text-white/80">{text}</p>
+      </div>
+      <div class="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+        <a href={u('/kontakt/#formular')} class="btn bg-white text-[#1f3a28] hover:bg-[#e7f3ea]">Nezáväzná obhliadka <Icon name="arrow" class="h-5 w-5" /></a>
+        <a href={phoneHref(SITE.phone)} class="btn-ghost-light"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+      </div>
+    </div>
+  </div>
+</section>

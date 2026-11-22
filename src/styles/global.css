@@ -1,0 +1,210 @@
+@import 'tailwindcss';
+
+/* Tmavý režim sa zapína triedou .dark na <html> (prepínač v hlavičke) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * FARBY – sémantické premenné. Svetlý a tmavý režim menia iba tieto hodnoty,
+ * komponenty používajú triedy ako bg-paper, text-ink, text-bark, bg-forest…
+ * Základ podľa design manuálu loga: zelená #35B065, hnedá #754C29.
+ */
+:root {
+  --paper: #faf7f2; /* pozadie stránky – papier / svetlé drevo */
+  --surface: #ffffff; /* karty */
+  --surface-2: #f3ece2; /* striedavé sekcie */
+  --ink: #2a1d12; /* nadpisy */
+  --body: #4a3b2e; /* bežný text */
+  --muted: #76675a; /* vedľajší text */
+  --line: #e7ddd0; /* okraje */
+  --bark: #754c29; /* hnedá z loga */
+  --bark-strong: #5c3a1e;
+  --leaf: #35b065; /* zelená z loga – dekor, ikony, veľké plochy */
+  --forest: #1d7a44; /* tmavšia zelená – tlačidlá a odkazy (kontrast AA) */
+  --forest-hover: #166238;
+  --on-forest: #ffffff;
+  --moss: #e7f3ea; /* zelený nádych */
+  --sand: #f1e6d8; /* hnedý nádych */
+  --deep: #2b1d12; /* tmavé bloky (CTA, pätička) */
+  --on-deep: #f4ece1;
+  --shadow: 42 29 18;
+  color-scheme: light;
+}
+
+.dark {
+  --paper: #0f1411;
+  --surface: #161e19;
+  --surface-2: #131a15;
+  --ink: #f3ede3;
+  --body: #d5ccbf;
+  --muted: #a4998b;
+  --line: #29352d;
+  --bark: #d9b38a;
+  --bark-strong: #e7c9a6;
+  --leaf: #4cc77d;
+  --forest: #4cc77d;
+  --forest-hover: #6bd696;
+  --on-forest: #0b120d;
+  --moss: #18291e;
+  --sand: #221c15;
+  --deep: #1a241d;
+  --on-deep: #f3ede3;
+  --shadow: 0 0 0;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Fraunces Variable', ui-serif, Georgia, serif;
+
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-bark: var(--bark);
+  --color-bark-strong: var(--bark-strong);
+  --color-leaf: var(--leaf);
+  --color-forest: var(--forest);
+  --color-forest-hover: var(--forest-hover);
+  --color-on-forest: var(--on-forest);
+  --color-moss: var(--moss);
+  --color-sand: var(--sand);
+  --color-deep: var(--deep);
+  --color-on-deep: var(--on-deep);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5.5rem;
+  }
+  body {
+    @apply bg-paper font-sans text-body antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  h1, h2, h3 {
+    @apply font-serif text-ink;
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  h1, h2 {
+    font-weight: 600;
+  }
+  h3 {
+    font-weight: 600;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-forest;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--leaf) 35%, transparent);
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-base font-semibold transition duration-200 active:scale-[0.98];
+}
+@utility card {
+  @apply rounded-3xl border border-line bg-surface p-6 sm:p-7;
+  box-shadow: 0 1px 2px rgb(var(--shadow) / 0.04), 0 8px 24px -12px rgb(var(--shadow) / 0.08);
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8;
+  }
+  .btn-primary {
+    @apply btn bg-forest text-on-forest shadow-sm hover:bg-forest-hover;
+  }
+  .btn-secondary {
+    @apply btn border border-line bg-surface text-ink hover:border-bark;
+  }
+  .btn-ghost-light {
+    @apply btn border border-white/30 text-white hover:bg-white/10;
+  }
+  .eyebrow {
+    @apply mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.14em] text-forest;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply inline-block h-px w-8 bg-leaf;
+  }
+  .card-link {
+    @apply card transition duration-300 hover:-translate-y-1 hover:border-leaf/60;
+  }
+  .card-link:hover {
+    box-shadow: 0 1px 2px rgb(var(--shadow) / 0.05), 0 18px 40px -16px rgb(var(--shadow) / 0.22);
+  }
+  .icon-tile {
+    @apply grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-moss text-forest;
+  }
+  .section-title {
+    @apply text-3xl leading-tight sm:text-4xl lg:text-[2.75rem];
+  }
+  .lead {
+    @apply text-lg leading-relaxed text-body sm:text-xl;
+  }
+  .prose-sk p {
+    @apply mb-4 leading-relaxed;
+  }
+  .prose-sk h2 {
+    @apply mb-3 mt-10 text-2xl;
+  }
+  .prose-sk ul {
+    @apply mb-4 list-disc space-y-1 pl-6;
+  }
+  .prose-sk a {
+    @apply font-semibold text-forest underline underline-offset-2;
+  }
+  /* jemná textúra letokruhov ako dekor */
+  .rings {
+    background-image: repeating-radial-gradient(
+      circle at 85% 15%,
+      transparent 0 22px,
+      color-mix(in srgb, var(--bark) 7%, transparent) 22px 23px
+    );
+  }
+  .leaf-bg {
+    background-image: radial-gradient(color-mix(in srgb, var(--leaf) 18%, transparent) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+}
+
+/* Logo – svetlá a tmavá verzia */
+.logo-dark {
+  display: none;
+}
+.dark .logo-light {
+  display: none;
+}
+.dark .logo-dark {
+  display: block;
+}
+
+/* Animácie pri scrollovaní – iba ak beží JS a používateľ nepreferuje obmedzený pohyb */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--delay, 0ms);
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Plynulé prepnutie témy bez blikania pri načítaní */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease !important;
+}

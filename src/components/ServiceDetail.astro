@@ -1,0 +1,143 @@
+---
+import { Image } from 'astro:assets';
+import etw from '../assets/brand/etw.png';
+import { abs, BUSINESS_ID, SITE, phoneHref, u } from '../config';
+import { PHOTOS } from '../data/images';
+import { CATEGORIES, servicesIn, serviceHref, type Service } from '../data/services';
+import Layout from '../layouts/Layout.astro';
+import CtaBanner from './CtaBanner.astro';
+import Faq from './Faq.astro';
+import Icon from './Icon.astro';
+import PageHero from './PageHero.astro';
+
+interface Props {
+  service: Service;
+}
+const { service: s } = Astro.props;
+const cat = CATEGORIES[s.category];
+const photo = s.photo ? PHOTOS[s.photo] : undefined;
+const others = servicesIn(s.category).filter((o) => o.slug !== s.slug);
+
+const schema: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.title,
+    serviceType: s.title,
+    description: s.seoDescription,
+    url: abs(serviceHref(s)),
+    provider: { '@id': BUSINESS_ID },
+    areaServed: [
+      { '@type': 'Country', name: 'Slovensko' },
+      { '@type': 'Country', name: 'Česká republika' },
+    ],
+  },
+];
+if (s.faq?.length) {
+  schema.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: s.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  });
+}
+---
+<Layout title={s.seoTitle} description={s.seoDescription} schema={schema}>
+  <PageHero
+    eyebrow={cat.title}
+    title={s.title}
+    lead={s.intro}
+    crumbs={[
+      { href: cat.href, label: cat.title },
+      { href: serviceHref(s), label: s.title },
+    ]}
+  >
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a href={u('/kontakt/#formular')} class="btn-primary">Obhliadka zdarma <Icon name="arrow" class="h-5 w-5" /></a>
+      <a href={phoneHref(SITE.phone)} class="btn-secondary"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="container-page mt-16 grid gap-12 lg:mt-20 lg:grid-cols-[1.5fr_1fr]">
+    <div>
+      <h2 class="section-title" data-reveal>{s.pointsTitle ?? 'Čo zahŕňa služba'}</h2>
+      <ol class="mt-8 space-y-4">
+        {s.points.map((p, i) => (
+          <li class="card flex gap-5" data-reveal style={`--delay:${i * 80}ms`}>
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-moss font-serif text-lg font-semibold text-forest">{i + 1}</span>
+            <div>
+              <h3 class="text-xl">{p.title}</h3>
+              <p class="mt-1.5 leading-relaxed">{p.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      {s.note && (
+        <div class="mt-8 flex gap-4 rounded-3xl border border-leaf/30 bg-moss p-6 sm:p-7" data-reveal>
+          <Icon name="leaf" class="h-6 w-6 shrink-0 text-forest" />
+          <p class="leading-relaxed text-ink">{s.note}</p>
+        </div>
+      )}
+    </div>
+
+    <aside class="space-y-5 lg:sticky lg:top-28 lg:self-start">
+      {photo ? (
+        <Image quality={72}
+          src={photo.src}
+          alt={photo.alt}
+          widths={[500, 800, 1000]}
+          sizes="(max-width: 1024px) 100vw, 440px"
+          class="aspect-[4/5] w-full rounded-[2rem] object-cover"
+          style={`object-position:${photo.position}`}
+          data-reveal
+        />
+      ) : (
+        <div class="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-[2rem] bg-moss" data-reveal>
+          <div class="leaf-bg absolute inset-0"></div>
+          <Icon name={s.icon} class="relative h-24 w-24 text-forest/70" />
+        </div>
+      )}
+      <div class="card" data-reveal>
+        <p class="font-serif text-2xl font-semibold text-ink">Máte záujem?</p>
+        <p class="mt-2 leading-relaxed">Prídeme na obhliadku, navrhneme postup a pripravíme cenovú ponuku – zdarma a nezáväzne.</p>
+        <div class="mt-5 grid gap-3">
+          <a href={phoneHref(SITE.phone)} class="btn-primary"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+          <a href={`mailto:${SITE.email}`} class="btn-secondary"><Icon name="mail" class="h-5 w-5" /> {SITE.email}</a>
+        </div>
+        {s.category === 'arboristika' && (
+          <div class="mt-6 flex items-center gap-3 border-t border-line pt-5">
+            <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white p-0.5 ring-1 ring-line">
+              <Image quality={72} src={etw} alt="Logo European Tree Worker" width={96} class="h-full w-full" />
+            </span>
+            <p class="text-sm leading-snug">Práce vykonáva certifikovaný arborista <strong class="text-ink">European Tree Worker</strong>.</p>
+          </div>
+        )}
+      </div>
+    </aside>
+  </section>
+
+  {s.faq && s.faq.length > 0 && (
+    <section class="container-page mt-24" aria-labelledby="faq-nadpis">
+      <h2 id="faq-nadpis" class="section-title mb-8" data-reveal>Časté otázky</h2>
+      <div class="max-w-4xl" data-reveal><Faq items={s.faq} /></div>
+    </section>
+  )}
+
+  <section class="container-page mt-24" aria-labelledby="dalsie-nadpis">
+    <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end" data-reveal>
+      <h2 id="dalsie-nadpis" class="section-title">Ďalšie služby – {cat.title.toLowerCase()}</h2>
+      <a href={u(cat.href)} class="inline-flex items-center gap-2 font-semibold text-forest">{cat.more} <Icon name="arrow" class="h-4 w-4" /></a>
+    </div>
+    <div class="grid gap-5 md:grid-cols-3">
+      {others.map((o, i) => (
+        <a href={u(serviceHref(o))} class="card-link group flex flex-col" data-reveal style={`--delay:${i * 80}ms`}>
+          <span class="icon-tile"><Icon name={o.icon} /></span>
+          <span class="mt-5 font-serif text-xl font-semibold text-ink">{o.title}</span>
+          <span class="mt-2 flex-1 text-[15px] leading-relaxed">{o.short}</span>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-forest">Viac <Icon name="arrow" class="h-4 w-4 transition group-hover:translate-x-1" /></span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CtaBanner />
+</Layout>

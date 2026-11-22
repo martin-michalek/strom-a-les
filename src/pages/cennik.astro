@@ -1,0 +1,74 @@
+---
+import CtaBanner from '../components/CtaBanner.astro';
+import Faq from '../components/Faq.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE, phoneHref, u } from '../config';
+import { FAQ_GENERAL } from '../data/faq';
+import Layout from '../layouts/Layout.astro';
+
+const factors = [
+  { icon: 'tree', title: 'Veľkosť a stav stromu', text: 'Výška, hrúbka kmeňa, druh dreviny a zdravotný stav – suchý alebo nalomený strom si vyžaduje opatrnejší postup.' },
+  { icon: 'pin', title: 'Okolie a prístup', text: 'Strechy, elektrické vedenie, cesty či ploty pod stromom a to, či sa k stromu dostane technika.' },
+  { icon: 'link', title: 'Zvolená technológia', text: 'Postupné spúšťanie na lanách, klasický výrub zo zeme alebo práca z vysokozdvižnej plošiny.' },
+  { icon: 'truck', title: 'Čo s drevom a konármi', text: 'Štiepkovanie, odvoz, napílenie dreva na požadované dĺžky alebo ponechanie dreva na pozemku.' },
+];
+---
+<Layout
+  title="Cenník – obhliadka a cenová ponuka zdarma"
+  description="Cenu orezu, výrubu či lesníckych prác stanovíme po bezplatnej obhliadke. Pevná cenová ponuka bez skrytých poplatkov. Telefonicky a e-mailom 24/7."
+  schema={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQ_GENERAL.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="Cenník"
+    title="Férová cena po obhliadke"
+    lead="Každý strom aj les je iný, preto nepracujeme s paušálnym cenníkom. Prídeme, posúdime situáciu a pripravíme pevnú cenovú ponuku – obhliadka je zdarma."
+    crumbs={[{ href: '/cennik/', label: 'Cenník' }]}
+  />
+
+  <section class="container-page mt-16">
+    <div class="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
+      <div class="relative overflow-hidden rounded-[2rem] bg-[#1f3a28] p-8 text-white sm:p-10 dark:bg-[#183022]" data-reveal>
+        <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#35b065]/25 blur-3xl"></div>
+        <p class="relative text-sm font-bold uppercase tracking-[0.16em] text-white/70">Obhliadka</p>
+        <p class="relative mt-3 font-serif text-6xl font-semibold">0 €</p>
+        <p class="relative mt-4 text-lg leading-relaxed text-white/85">Obhliadka a cenová ponuka sú zdarma a nezáväzné. Cena v ponuke je pevná – vopred viete, za čo platíte.</p>
+        <ul class="relative mt-6 space-y-2.5 text-white/90">
+          <li class="flex gap-2.5"><Icon name="check" class="h-5 w-5 shrink-0 text-[#7ee0a5]" /> Posúdenie stavu stromu či porastu</li>
+          <li class="flex gap-2.5"><Icon name="check" class="h-5 w-5 shrink-0 text-[#7ee0a5]" /> Návrh najvhodnejšieho postupu</li>
+          <li class="flex gap-2.5"><Icon name="check" class="h-5 w-5 shrink-0 text-[#7ee0a5]" /> Pevná cenová ponuka</li>
+        </ul>
+        <div class="relative mt-8 flex flex-col gap-3">
+          <a href={phoneHref(SITE.phone)} class="btn bg-white text-[#1f3a28] hover:bg-[#e7f3ea]"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+          <a href={u('/kontakt/#formular')} class="btn-ghost-light">Napísať správu</a>
+        </div>
+      </div>
+      <div>
+        <h2 class="section-title" data-reveal>Čo ovplyvňuje cenu</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2">
+          {factors.map((f, i) => (
+            <div class="card" data-reveal style={`--delay:${i * 80}ms`}>
+              <span class="icon-tile"><Icon name={f.icon} /></span>
+              <h3 class="mt-5 text-xl">{f.title}</h3>
+              <p class="mt-2 leading-relaxed">{f.text}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-6 text-[15px] text-muted" data-reveal>Pri lesníckych službách (OLH, ťažba, administratíva) a palivovom dreve vám cenu povieme po krátkom telefonáte podľa rozsahu prác a množstva.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page mt-24" aria-labelledby="faq-nadpis">
+    <h2 id="faq-nadpis" class="section-title mb-8" data-reveal>Časté otázky</h2>
+    <div class="max-w-4xl" data-reveal><Faq items={FAQ_GENERAL} /></div>
+  </section>
+
+  <CtaBanner />
+</Layout>

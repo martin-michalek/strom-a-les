@@ -1,0 +1,79 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE, phoneHref } from '../config';
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Kontakt – nezáväzná obhliadka a cenová ponuka"
+  description={`Kontaktujte Stromales – ${SITE.phone}, ${SITE.email}. Obhliadka a cenová ponuka zdarma. Pôsobíme na celom Slovensku a v Českej republike.`}
+  schema={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      name: 'Kontakt – Stromales',
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="Kontakt"
+    title="Ozvite sa nám"
+    lead="Máte otázky alebo záujem o nezáväznú cenovú ponuku? Zavolajte alebo napíšte – ozveme sa vám do 24 hodín."
+    crumbs={[{ href: '/kontakt/', label: 'Kontakt' }]}
+  />
+
+  <section class="container-page mt-14 grid gap-10 lg:grid-cols-[1fr_1.5fr]">
+    <div class="space-y-5">
+      <div class="card" data-reveal>
+        <p class="text-sm font-bold uppercase tracking-[0.14em] text-muted">Kontaktná osoba</p>
+        <p class="mt-2 font-serif text-2xl font-semibold text-ink">{SITE.owner}</p>
+        <ul class="mt-6 space-y-4">
+          <li>
+            <a href={phoneHref(SITE.phone)} class="group flex items-center gap-4">
+              <span class="icon-tile transition group-hover:bg-forest group-hover:text-on-forest"><Icon name="phone" /></span>
+              <span><span class="block text-sm text-muted">Telefón</span><span class="text-lg font-semibold text-ink">{SITE.phone}</span></span>
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${SITE.email}`} class="group flex items-center gap-4">
+              <span class="icon-tile transition group-hover:bg-forest group-hover:text-on-forest"><Icon name="mail" /></span>
+              <span><span class="block text-sm text-muted">E-mail</span><span class="text-lg font-semibold text-ink">{SITE.email}</span></span>
+            </a>
+          </li>
+          <li class="flex items-center gap-4">
+            <span class="icon-tile"><Icon name="clock" /></span>
+            <span><span class="block text-sm text-muted">Dostupnosť</span><span class="font-semibold text-ink">{SITE.openingHours}</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card" data-reveal style="--delay:100ms">
+        <div class="flex gap-4">
+          <span class="icon-tile"><Icon name="globe" /></span>
+          <div>
+            <p class="font-semibold text-ink">Kde pôsobíme</p>
+            <p class="mt-1 leading-relaxed">Naše služby poskytujeme na celom území Slovenska a Českej republiky.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-reveal style="--delay:160ms">
+        <p class="font-semibold text-ink">Fakturačné údaje</p>
+        <dl class="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[15px]">
+          <dt class="text-muted">Firma</dt><dd class="text-ink">{SITE.legalName}</dd>
+          <dt class="text-muted">Sídlo</dt><dd class="text-ink">{SITE.street}, {SITE.postalCode} {SITE.city}</dd>
+          <dt class="text-muted">IČO</dt><dd class="text-ink">{SITE.ico}</dd>
+          {SITE.dic && <><dt class="text-muted">DIČ</dt><dd class="text-ink">{SITE.dic}</dd></>}
+          {SITE.icdph && <><dt class="text-muted">IČ DPH</dt><dd class="text-ink">{SITE.icdph}</dd></>}
+        </dl>
+      </div>
+    </div>
+
+    <div id="formular" class="scroll-mt-28" data-reveal style="--delay:80ms">
+      <h2 class="section-title mb-2">Napíšte nám</h2>
+      <p class="mb-8 text-lg">Popíšte, s čím potrebujete pomôcť – ideálne aj kde sa strom či les nachádza.</p>
+      <ContactForm />
+    </div>
+  </section>
+</Layout>

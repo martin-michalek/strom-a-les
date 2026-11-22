@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import { SITE, phoneHref, u } from '../config';
+import { PHOTOS, type PhotoKey } from '../data/images';
+import { CATEGORIES, servicesIn, serviceHref, type Category } from '../data/services';
+import Layout from '../layouts/Layout.astro';
+import CtaBanner from './CtaBanner.astro';
+import Icon from './Icon.astro';
+import PageHero from './PageHero.astro';
+
+interface Props {
+  category: Category;
+  seoTitle: string;
+  seoDescription: string;
+  heroTitle: string;
+  lead: string;
+  introTitle: string;
+  intro: string[];
+  introPhoto: PhotoKey;
+  benefitsTitle: string;
+  benefits: { icon: string; title: string; text: string }[];
+}
+const p = Astro.props;
+const cat = CATEGORIES[p.category];
+const services = servicesIn(p.category);
+const photo = PHOTOS[p.introPhoto];
+---
+<Layout title={p.seoTitle} description={p.seoDescription}>
+  <PageHero eyebrow={cat.title} title={p.heroTitle} lead={p.lead} crumbs={[{ href: cat.href, label: cat.title }]}>
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+      <a href={u('/kontakt/#formular')} class="btn-primary">Obhliadka zdarma <Icon name="arrow" class="h-5 w-5" /></a>
+      <a href={phoneHref(SITE.phone)} class="btn-secondary"><Icon name="phone" class="h-5 w-5" /> {SITE.phone}</a>
+    </div>
+  </PageHero>
+
+  <section class="container-page mt-20" aria-labelledby="sluzby-nadpis">
+    <h2 id="sluzby-nadpis" class="section-title" data-reveal>Naše služby</h2>
+    <div class="mt-10 grid gap-5 md:grid-cols-2">
+      {services.map((s, i) => {
+        const ph = s.photo ? PHOTOS[s.photo] : undefined;
+        return (
+          <a href={u(serviceHref(s))} class="card-link group grid overflow-hidden !p-0 sm:grid-cols-[0.85fr_1fr]" data-reveal style={`--delay:${(i % 2) * 100}ms`}>
+            {ph ? (
+              <Image quality={72} src={ph.src} alt="" widths={[400, 700]} sizes="(max-width: 640px) 100vw, 300px" class="aspect-[16/10] h-full w-full object-cover sm:aspect-auto" style={`object-position:${ph.position}`} />
+            ) : (
+              <span class="relative grid aspect-[16/10] place-items-center bg-moss sm:aspect-auto">
+                <span class="leaf-bg absolute inset-0"></span>
+                <Icon name={s.icon} class="relative h-16 w-16 text-forest/70" />
+              </span>
+            )}
+            <span class="flex flex-col p-6 sm:p-7">
+              <span class="icon-tile !h-10 !w-10 !rounded-xl"><Icon name={s.icon} class="h-5 w-5" /></span>
+              <span class="mt-4 font-serif text-2xl font-semibold text-ink">{s.title}</span>
+              <span class="mt-2 flex-1 leading-relaxed">{s.short}</span>
+              <span class="mt-5 inline-flex items-center gap-1.5 font-semibold text-forest">Viac o službe <Icon name="arrow" class="h-4 w-4 transition group-hover:translate-x-1" /></span>
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="relative mt-28 overflow-hidden bg-surface-2 py-20 sm:py-24" aria-labelledby="preco-nadpis">
+    <div class="rings pointer-events-none absolute inset-0"></div>
+    <div class="container-page relative grid items-center gap-12 lg:grid-cols-2">
+      <div data-reveal>
+        <h2 id="preco-nadpis" class="section-title">{p.introTitle}</h2>
+        {p.intro.map((t) => <p class="mt-5 text-lg leading-relaxed">{t}</p>)}
+      </div>
+      <Image quality={72}
+        src={photo.src}
+        alt={photo.alt}
+        widths={[500, 800, 1100]}
+        sizes="(max-width: 1024px) 100vw, 580px"
+        class="aspect-[4/3] w-full rounded-[2.5rem] rounded-tr-[7rem] object-cover"
+        style={`object-position:${photo.position}`}
+        data-reveal
+      />
+    </div>
+    <div class="container-page relative mt-14">
+      <h2 class="mb-8 text-2xl sm:text-3xl" data-reveal>{p.benefitsTitle}</h2>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {p.benefits.map((b, i) => (
+          <div class="card" data-reveal style={`--delay:${i * 90}ms`}>
+            <span class="icon-tile"><Icon name={b.icon} /></span>
+            <h3 class="mt-5 text-xl">{b.title}</h3>
+            <p class="mt-2 leading-relaxed">{b.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</Layout>

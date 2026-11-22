@@ -1,0 +1,159 @@
+---
+/**
+ * Galéria fotiek s otvorením na celú obrazovku (natívny <dialog>, bez knižníc).
+ * Na mobile sa dá vo zväčšenej fotke listovať potiahnutím prsta.
+ */
+import { Image, getImage } from 'astro:assets';
+import { GALLERY_CATEGORIES, PHOTOS, type GalleryCategory, type PhotoKey } from '../data/images';
+import Icon from './Icon.astro';
+
+interface Props {
+  items: { key: PhotoKey; caption: string; category?: GalleryCategory }[];
+  /** 'grid' = mriežka s filtrom (podstránka), 'strip' = vodorovný pás (úvod) */
+  variant?: 'grid' | 'strip';
+  filter?: boolean;
+}
+const { items, variant = 'grid', filter = false } = Astro.props;
+
+const full = await Promise.all(items.map((item) => getImage({ src: PHOTOS[item.key].src, width: 1600, format: 'webp', quality: 72 })));
+const usedCats = [...new Set(items.map((i) => i.category).filter(Boolean))] as GalleryCategory[];
+---
+{filter && usedCats.length > 1 && (
+  <div class="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrovať fotky">
+    <button type="button" data-filter="all" aria-pressed="true" class="gallery-filter">Všetko</button>
+    {usedCats.map((c) => (
+      <button type="button" data-filter={c} aria-pressed="false" class="gallery-filter">{GALLERY_CATEGORIES[c]}</button>
+    ))}
+  </div>
+)}
+
+<div
+  class:list={[
+    'gallery',
+    variant === 'grid'
+      ? 'columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4'
+      : '-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 sm:mx-0 sm:px-0 [scrollbar-width:thin]',
+  ]}
+>
+  {items.map((item, i) => (
+    <button
+      type="button"
+      class:list={[
+        'group relative block w-full break-inside-avoid overflow-hidden rounded-3xl bg-surface-2 text-left',
+        variant === 'strip' && 'w-[72%] shrink-0 snap-start sm:w-[calc(40%-0.5rem)] lg:w-[calc(25%-0.75rem)]',
+      ]}
+      data-index={i}
+      data-full={full[i].src}
+      data-category={item.category}
+      aria-label={`Zväčšiť fotku: ${item.caption}`}
+    >
+      <Image quality={72}
+        src={PHOTOS[item.key].src}
+        alt={PHOTOS[item.key].alt}
+        widths={[400, 700, 1000]}
+        sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 400px"
+        class:list={['w-full object-cover transition duration-500 group-hover:scale-[1.04]', variant === 'strip' ? 'aspect-[3/4]' : 'h-auto']}
+        style={`object-position:${PHOTOS[item.key].position}`}
+      />
+      <span class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent p-5 pt-14 text-sm font-semibold text-white">
+        {item.caption}
+      </span>
+      <span class="pointer-events-none absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-[#2a1d12] opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100">
+        <Icon name="search" class="h-5 w-5" />
+      </span>
+    </button>
+  ))}
+</div>
+
+<dialog id="lightbox" class="m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-black/90" aria-label="Zväčšená fotka">
+  <div class="relative flex h-dvh w-screen items-center justify-center bg-black/92 p-4 sm:p-10" data-backdrop>
+    <img id="lightbox-img" src="" alt="" class="max-h-[80vh] max-w-full rounded-2xl object-contain shadow-2xl" />
+    <p id="lightbox-caption" class="absolute inset-x-0 bottom-6 px-6 text-center text-sm font-semibold text-white"></p>
+    <p id="lightbox-count" class="absolute left-5 top-6 text-sm font-semibold text-white/70"></p>
+
+    <button type="button" data-close class="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/25" aria-label="Zavrieť">
+      <Icon name="close" />
+    </button>
+    <button type="button" data-prev class="absolute left-2 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/25 sm:grid sm:left-6" aria-label="Predchádzajúca fotka">
+      <Icon name="arrow" class="h-5 w-5 rotate-180" />
+    </button>
+    <button type="button" data-next class="absolute right-2 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur transition hover:bg-white/25 sm:grid sm:right-6" aria-label="Ďalšia fotka">
+      <Icon name="arrow" class="h-5 w-5" />
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .gallery-filter {
+    border-radius: 9999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    padding: 0.55rem 1.15rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .gallery-filter:hover {
+    border-color: var(--forest);
+  }
+  .gallery-filter[aria-pressed='true'] {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: var(--on-forest);
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const img = document.getElementById('lightbox-img') as HTMLImageElement | null;
+  const caption = document.getElementById('lightbox-caption');
+  const count = document.getElementById('lightbox-count');
+  const all = Array.from(document.querySelectorAll<HTMLButtonElement>('.gallery button[data-full]'));
+  const visible = () => all.filter((b) => !b.hidden);
+  let current = 0;
+
+  const open = (i: number) => {
+    const list = visible();
+    if (!dialog || !img || list.length === 0) return;
+    current = (i + list.length) % list.length;
+    const btn = list[current];
+    const thumb = btn.querySelector('img');
+    img.src = btn.dataset.full ?? '';
+    img.alt = thumb?.alt ?? '';
+    if (caption) caption.textContent = btn.getAttribute('aria-label')?.replace('Zväčšiť fotku: ', '') ?? '';
+    if (count) count.textContent = `${current + 1} / ${list.length}`;
+    if (!dialog.open) dialog.showModal();
+  };
+
+  all.forEach((btn) => btn.addEventListener('click', () => open(visible().indexOf(btn))));
+  dialog?.querySelector('[data-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.querySelector('[data-prev]')?.addEventListener('click', () => open(current - 1));
+  dialog?.querySelector('[data-next]')?.addEventListener('click', () => open(current + 1));
+  dialog?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).hasAttribute('data-backdrop')) dialog.close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!dialog?.open) return;
+    if (e.key === 'ArrowRight') open(current + 1);
+    if (e.key === 'ArrowLeft') open(current - 1);
+  });
+
+  // potiahnutie prstom
+  let startX = 0;
+  dialog?.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+  dialog?.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) open(current + (dx < 0 ? 1 : -1));
+  });
+
+  // filter kategórií
+  const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  filters.forEach((f) =>
+    f.addEventListener('click', () => {
+      const cat = f.dataset.filter;
+      filters.forEach((x) => x.setAttribute('aria-pressed', String(x === f)));
+      all.forEach((b) => (b.hidden = cat !== 'all' && b.dataset.category !== cat));
+    }),
+  );
+</script>

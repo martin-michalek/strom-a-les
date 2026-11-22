@@ -1,0 +1,22 @@
+---
+import CtaBanner from '../components/CtaBanner.astro';
+import Gallery from '../components/Gallery.astro';
+import PageHero from '../components/PageHero.astro';
+import { GALLERY } from '../data/images';
+import Layout from '../layouts/Layout.astro';
+---
+<Layout
+  title="Galéria – rizikové výruby, orezy a práca v lese"
+  description="Fotografie z našej práce: rizikové výruby nad strechami a pri budovách, orezy stromov stromolezeckou technikou a práca v lesných porastoch."
+>
+  <PageHero
+    eyebrow="Z našej práce"
+    title="Galéria"
+    lead="Výber z realizovaných zákaziek – rizikové výruby v stiesnených podmienkach, orezy aj práca v lese. Ďalšie fotky pribúdajú."
+    crumbs={[{ href: '/galeria/', label: 'Galéria' }]}
+  />
+  <section class="container-page mt-14">
+    <Gallery items={GALLERY} filter />
+  </section>
+  <CtaBanner />
+</Layout>

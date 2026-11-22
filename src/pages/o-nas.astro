@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import etw from '../assets/brand/etw.png';
+import CtaBanner from '../components/CtaBanner.astro';
+import Icon from '../components/Icon.astro';
+import PageHero from '../components/PageHero.astro';
+import { CERTIFICATES, SITE, phoneHref } from '../config';
+import { PHOTOS } from '../data/images';
+import Layout from '../layouts/Layout.astro';
+
+const milestones = [
+  { icon: 'trees', title: 'Les na Považí', text: 'Príbeh začal v útlom detstve častými prechádzkami v lese, ktoré prerástli do lásky k lesu a prírode.' },
+  { icon: 'file', title: 'Lesnícke štúdium', text: 'Štúdium lesníctva na Slovensku a neskôr v Českej republike – a popri ňom prvé kroky v arboristike.' },
+  { icon: 'badge', title: 'European Tree Worker', text: 'Arboristike sa venujeme takmer desaťročie. Kvalitu potvrdzuje európsky certifikát European Tree Worker.' },
+  { icon: 'scale', title: 'Štátna správa', text: 'Skúsenosti s lesníckou administratívou a predpismi v oblasti lesného hospodárstva priamo z úradu.' },
+  { icon: 'leaf', title: 'OLH a lesný reprodukčný materiál', text: 'Osvedčenie odborného lesného hospodára a odborná spôsobilosť na nakladanie s lesným reprodukčným materiálom.' },
+];
+---
+<Layout
+  title="O nás – Ing. Milan Mičúch, arborista a lesník"
+  description="Stromales s. r. o. – Ing. Milan Mičúch. Certifikovaný arborista European Tree Worker, odborný lesný hospodár a skúsenosti zo štátnej správy lesného hospodárstva."
+>
+  <PageHero
+    eyebrow="O nás"
+    title="Z lásky k lesu"
+    lead="Odborné, technicky a legislatívne správne zrealizované služby – to je to, čo chceme ponúknuť každému zákazníkovi."
+    crumbs={[{ href: '/o-nas/', label: 'O nás' }]}
+  />
+
+  <section class="container-page mt-16 grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+    <div class="space-y-5 text-lg leading-relaxed" data-reveal>
+      <p class="font-serif text-2xl leading-snug text-ink sm:text-[1.7rem]">
+        Príbeh našej spoločnosti začal v útlom detstve častými prechádzkami v lese na Považí.
+      </p>
+      <p>
+        Postupne to prerástlo do lásky k lesu a prírode, čo viedlo k štúdiu na lesníckej škole na Slovensku a neskôr v Českej republike. Popri štúdiu lesníctva sme sa prirodzene dostali k arboristike, ktorej sa venujeme už takmer desaťročie, a skúsenosti zo zahraničia sa snažíme využiť pri starostlivosti o stromy na Slovensku. Dôkazom kvality našich služieb v tejto oblasti je certifikát European Tree Worker.
+      </p>
+      <p>
+        Po štúdiu viedli naše kroky do štátnej správy, kde sme získali skúsenosti s lesníckou administratívou a predpismi v oblasti lesného hospodárstva. Ďalším významným krokom bolo získanie osvedčenia na činnosť odborného lesného hospodára a osoby spôsobilej na nakladanie s lesným reprodukčným materiálom.
+      </p>
+      <p>
+        Všetky nadobudnuté skúsenosti sa teraz snažíme využiť v prospech našich zákazníkov tým, že im poskytneme odborné, technicky a legislatívne správne zrealizované služby.
+      </p>
+    </div>
+
+    <aside class="space-y-5 lg:sticky lg:top-28 lg:self-start" data-reveal>
+      <Image quality={72}
+        src={PHOTOS.vyrubPriBudove.src}
+        alt={PHOTOS.vyrubPriBudove.alt}
+        widths={[500, 800]}
+        sizes="(max-width: 1024px) 100vw, 440px"
+        class="aspect-[4/5] w-full rounded-[2rem] object-cover"
+        style={`object-position:${PHOTOS.vyrubPriBudove.position}`}
+      />
+      <div class="card flex items-center gap-4">
+        <span class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-moss font-serif text-2xl font-semibold text-forest">MM</span>
+        <div>
+          <p class="font-serif text-xl font-semibold text-ink">{SITE.owner}</p>
+          <p class="text-sm text-muted">Konateľ, arborista ETW a odborný lesný hospodár</p>
+          <a href={phoneHref(SITE.phone)} class="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-forest"><Icon name="phone" class="h-4 w-4" /> {SITE.phone}</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="flex gap-3">
+          <Icon name="users" class="h-6 w-6 shrink-0 text-forest" />
+          <p class="leading-relaxed">Zákazky osobne vedieme od obhliadky po odovzdanie. Pri väčších prácach prizývame overený tím kolegov, ktorých sami riadime.</p>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="relative mt-28 overflow-hidden bg-surface-2 py-20 sm:py-24" aria-labelledby="cesta-nadpis">
+    <div class="rings pointer-events-none absolute inset-0"></div>
+    <div class="container-page relative">
+      <h2 id="cesta-nadpis" class="section-title" data-reveal>Naša cesta</h2>
+      <ol class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+        {milestones.map((m, i) => (
+          <li class="card relative" data-reveal style={`--delay:${i * 90}ms`}>
+            <span class="font-serif text-sm font-semibold text-muted">0{i + 1}</span>
+            <span class="icon-tile mt-3"><Icon name={m.icon} /></span>
+            <h3 class="mt-5 text-lg">{m.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed">{m.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="container-page mt-28" id="certifikaty" aria-labelledby="cert-nadpis">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Odbornosť</p>
+      <h2 id="cert-nadpis" class="section-title">Certifikáty a osvedčenia</h2>
+    </div>
+    <ul class="mt-10 grid gap-5 md:grid-cols-3">
+      {CERTIFICATES.map((c, i) => (
+        <li class="card flex flex-col" data-reveal style={`--delay:${i * 100}ms`}>
+          {c.id === 'etw' ? (
+            <span class="grid h-24 w-24 place-items-center rounded-full bg-white p-0.5 ring-1 ring-line">
+              <Image quality={72} src={etw} alt="Logo European Tree Worker – European Arboricultural Council" width={192} class="h-full w-full" />
+            </span>
+          ) : (
+            <span class="icon-tile !h-24 !w-24 !rounded-full"><Icon name={c.id === 'olh' ? 'trees' : 'leaf'} class="h-10 w-10" /></span>
+          )}
+          <h3 class="mt-6 text-2xl">{c.title}</h3>
+          <p class="mt-1 text-sm font-medium text-muted">{c.issuer}</p>
+          <p class="mt-3 leading-relaxed">{c.text}</p>
+          {(c.number || c.validUntil) && (
+            <dl class="mt-auto grid gap-1 pt-5 text-sm">
+              {c.number && <div class="flex gap-2"><dt class="text-muted">Číslo:</dt><dd class="font-semibold text-ink">{c.number}</dd></div>}
+              {c.validUntil && <div class="flex gap-2"><dt class="text-muted">Platnosť:</dt><dd class="font-semibold text-ink">{c.validUntil}</dd></div>}
+            </dl>
+          )}
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <CtaBanner />
+</Layout>

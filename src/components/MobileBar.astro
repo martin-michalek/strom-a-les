@@ -1,0 +1,11 @@
+---
+/** Spodná lišta na mobile – zavolať / napísať sú vždy po ruke. */
+import { SITE, phoneHref, u } from '../config';
+import Icon from './Icon.astro';
+---
+<div class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md lg:hidden">
+  <div class="mx-auto grid max-w-md grid-cols-2 gap-3">
+    <a href={phoneHref(SITE.phone)} class="btn-primary !py-3 text-[15px]"><Icon name="phone" class="h-5 w-5" /> Zavolať</a>
+    <a href={u('/kontakt/#formular')} class="btn-secondary !py-3 text-[15px]"><Icon name="message" class="h-5 w-5" /> Napísať</a>
+  </div>
+</div>

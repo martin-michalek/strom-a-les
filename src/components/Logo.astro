@@ -1,0 +1,19 @@
+---
+/** Logo Stromales – svetlá verzia (hnedá) a tmavá verzia (krémová) sa prepínajú s témou. */
+import { u } from '../config';
+interface Props {
+  variant?: 'compact' | 'full';
+  class?: string;
+  alt?: string;
+}
+const { variant = 'compact', class: cls = 'h-8 w-auto', alt = 'Stromales' } = Astro.props;
+const file = variant === 'full' ? 'logo-full' : 'logo';
+// pomery strán podľa viewBoxu SVG
+const ratio = variant === 'full' ? 327.488 / 59.113 : 185.781 / 32.422;
+const h = 40;
+const w = Math.round(h * ratio);
+---
+<span class="inline-block">
+  <img src={u(`/brand/${file}.svg`)} alt={alt} width={w} height={h} class:list={['logo-light', cls]} />
+  <img src={u(`/brand/${file}-dark.svg`)} alt={alt} width={w} height={h} class:list={['logo-dark', cls]} />
+</span>
