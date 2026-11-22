@@ -51,14 +51,13 @@ Repo: `git@github.com:martin-michalek/strom-a-les.git` → dočasne beží na
 **https://martin-michalek.github.io/strom-a-les/**
 
 ```bash
-git branch -M main
 git add -A
 git commit -m "Web Stromales"
-git push -u origin main
+git push -u origin master
 ```
 
 GitHub → **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-Workflow `.github/workflows/deploy.yml` postaví a nasadí web pri každom pushi do `main` (~2 min).
+Workflow `.github/workflows/deploy.yml` postaví a nasadí web pri každom pushi do `master` (~2 min).
 Repo musí byť **verejné** (GitHub Pages na bezplatnom účte).
 
 Kým web beží na `github.io`, má `indexable: false` → stránky majú `noindex`, aby Google
