@@ -11,7 +11,7 @@ export const SITE = {
   domain: 'https://stromales.sk',
   // Kým nie je presmerovaná doména, nechceme, aby Google indexoval dočasnú
   // adresu *.github.io. Po prepnutí DNS zmeňte na true.
-  indexable: false,
+  indexable: true,
 
   name: 'Stromales',
   legalName: 'Stromales s. r. o.',
