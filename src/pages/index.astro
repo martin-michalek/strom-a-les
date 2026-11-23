@@ -5,6 +5,7 @@ import CtaBanner from '../components/CtaBanner.astro';
 import Faq from '../components/Faq.astro';
 import Gallery from '../components/Gallery.astro';
 import Icon from '../components/Icon.astro';
+import Stats from '../components/Stats.astro';
 import { CERTIFICATES, SITE, phoneHref, u } from '../config';
 import { GALLERY, GALLERY_TEASER, PHOTOS } from '../data/images';
 import { CATEGORIES, servicesIn, serviceHref } from '../data/services';
@@ -148,6 +149,11 @@ const faq = FAQ_GENERAL.slice(0, 4);
         </article>
       ))}
     </div>
+  </section>
+
+  <!-- ČÍSLA -->
+  <section class="container-page mt-24" aria-label="Stromales v číslach">
+    <Stats />
   </section>
 
   <!-- PREČO MY -->

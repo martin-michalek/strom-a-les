@@ -4,6 +4,7 @@ import etw from '../assets/brand/etw.png';
 import CtaBanner from '../components/CtaBanner.astro';
 import Icon from '../components/Icon.astro';
 import PageHero from '../components/PageHero.astro';
+import Stats from '../components/Stats.astro';
 import { CERTIFICATES, SITE, phoneHref } from '../config';
 import { PHOTOS } from '../data/images';
 import Layout from '../layouts/Layout.astro';
@@ -69,6 +70,10 @@ const milestones = [
     </aside>
   </section>
 
+  <section class="container-page mt-24" aria-label="Stromales v číslach">
+    <Stats />
+  </section>
+
   <section class="relative mt-28 overflow-hidden bg-surface-2 py-20 sm:py-24" aria-labelledby="cesta-nadpis">
     <div class="rings pointer-events-none absolute inset-0"></div>
     <div class="container-page relative">
@@ -107,8 +112,11 @@ const milestones = [
           {(c.number || c.validUntil) && (
             <dl class="mt-auto grid gap-1 pt-5 text-sm">
               {c.number && <div class="flex gap-2"><dt class="text-muted">Číslo:</dt><dd class="font-semibold text-ink">{c.number}</dd></div>}
-              {c.validUntil && <div class="flex gap-2"><dt class="text-muted">Platnosť:</dt><dd class="font-semibold text-ink">{c.validUntil}</dd></div>}
+              {c.validUntil && <div class="flex gap-2"><dt class="text-muted">Platnosť do:</dt><dd class="font-semibold text-ink">{c.validUntil}</dd></div>}
             </dl>
+          )}
+          {c.verifyUrl && (
+            <a href={c.verifyUrl} target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-forest underline underline-offset-2">Overiť v registri <Icon name="arrow" class="h-4 w-4" /></a>
           )}
         </li>
       ))}

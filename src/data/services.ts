@@ -104,7 +104,7 @@ export const SERVICES: Service[] = [
         text: 'Pri havarijnom stave stromu, alebo tam, kde si to situácia nevyhnutne vyžaduje, pracujeme z vysokozdvižnej plošiny.',
       },
     ],
-    note: 'Po výrube pracovisko upraceme – konáre zoštiepkujeme alebo odvezieme a drevo napílime podľa vašich predstáv. Pomôžeme aj so súhlasom na výrub.',
+    note: 'Potrebnú techniku – vysokozdvižnú plošinu, štiepkovač či frézu na pne – zabezpečíme podľa situácie. Po výrube pracovisko upraceme, konáre zoštiepkujeme alebo odvezieme a drevo napílime podľa vašich predstáv. Pomôžeme aj so súhlasom na výrub.',
     faq: [
       {
         q: 'Potrebujem na výrub stromu povolenie?',
@@ -274,7 +274,7 @@ export const SERVICES: Service[] = [
     short: 'Tvrdé palivové drevo ako metrovica alebo štiepané v dĺžke 25, 33 či 50 cm – s dovozom až k vám.',
     seoTitle: 'Palivové drevo – tvrdé, metrovica aj štiepané s dovozom',
     seoDescription:
-      'Predaj tvrdého palivového dreva pre domácnosti aj firmy. Metrovica alebo štiepané drevo v dĺžkach 25, 33 alebo 50 cm. Dovoz našou technikou až k vám domov.',
+      'Predaj tvrdého palivového dreva pre domácnosti aj firmy. Metrovica alebo štiepané drevo v dĺžkach 25, 33 alebo 50 cm. S dovozom až k vám domov.',
     icon: 'flame',
     photo: undefined,
     intro: 'Ponúkame kvalitné palivové drevo pre domácnosti aj firmy za férové ceny. Cenu a termín dodania vám povieme po krátkom telefonáte.',
@@ -282,7 +282,7 @@ export const SERVICES: Service[] = [
     points: [
       { title: 'Sortiment', text: 'Tvrdé palivové drevo.' },
       { title: 'Forma dodania', text: 'Metrovica alebo štiepané drevo v dĺžkach podľa vášho želania – 25, 33 alebo 50 cm.' },
-      { title: 'Doprava', text: 'Zabezpečíme odvoz priamo k vám domov našou technikou.' },
+      { title: 'Doprava', text: 'Zabezpečíme dovoz priamo k vám domov.' },
     ],
   },
 ];

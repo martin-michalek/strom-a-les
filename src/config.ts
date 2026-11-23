@@ -55,18 +55,21 @@ export const CERTIFICATES = [
   {
     id: 'etw',
     title: 'European Tree Worker',
-    issuer: 'European Arboricultural Council (EAC)',
+    issuer: 'European Arboricultural Council (EAC) · špecializácia Climber',
     text: 'Európsky certifikát arboristu. Potvrdzuje odborné znalosti a praktické zručnosti pri starostlivosti o stromy rastúce mimo lesa vrátane bezpečnej práce v korune stromu.',
-    number: '', // TODO: číslo certifikátu ETW
-    validUntil: '', // TODO: platnosť
+    number: '009377',
+    validUntil: '31. 12. 2027',
+    // odkaz na záznam v registri certifikovaných arboristov EAC (zobrazí sa „Overiť v registri“)
+    verifyUrl: '',
   },
   {
     id: 'olh',
     title: 'Odborný lesný hospodár',
     issuer: 'Osvedčenie podľa zákona o lesoch',
     text: 'Oprávnenie vykonávať činnosť odborného lesného hospodára – odborné riadenie hospodárenia v lese pre vlastníkov a správcov lesov.',
-    number: '', // TODO: číslo osvedčenia OLH
+    number: '442/2024-TN',
     validUntil: '',
+    verifyUrl: '',
   },
   {
     id: 'lrm',
@@ -75,7 +78,18 @@ export const CERTIFICATES = [
     text: 'Odborná spôsobilosť na nakladanie s lesným reprodukčným materiálom – semená a sadenice lesných drevín overeného pôvodu.',
     number: '', // TODO: číslo osvedčenia
     validUntil: '',
+    verifyUrl: '',
   },
+];
+
+/**
+ * Čísla na úvode a na stránke O nás. Hektáre sa často menia – stačí upraviť tu.
+ */
+export const STATS = [
+  { value: '10', suffix: 'rokov', label: 'praxe v arboristike' },
+  { value: '2\u00a0400', suffix: 'ha', label: 'lesa v starostlivosti ako odborný lesný hospodár' },
+  { value: 'ETW', suffix: '', label: 'európsky certifikát arboristu č. 009377' },
+  { value: 'SK\u00a0+\u00a0CZ', suffix: '', label: 'pôsobíme na celom Slovensku a v Česku' },
 ];
 
 export type NavItem = { href: string; label: string; children?: { href: string; label: string }[] };

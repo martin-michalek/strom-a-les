@@ -21,6 +21,10 @@ export const FAQ_GENERAL = [
     a: 'Konáre odvezieme alebo zoštiepkujeme, drevo napílime podľa vašich predstáv a pozemok po sebe upraceme.',
   },
   {
+    q: 'Máte k dispozícii plošinu, štiepkovač alebo frézu na pne?',
+    a: 'Áno, podľa potreby zabezpečíme vysokozdvižnú plošinu, štiepkovač, frézu na pne aj techniku na približovanie dreva v lese. Akú techniku zákazka vyžaduje, posúdime pri obhliadke.',
+  },
+  {
     q: 'Ste poistení?',
     a: 'Áno, sme plne poistení voči prípadným škodám na majetku.',
   },
